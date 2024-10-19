@@ -1,6 +1,6 @@
 import React from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Input, InputNumber, Select, ColorPicker } from 'antd';
+import { Button, DatePicker, Input, InputNumber, Select, ColorPicker, Switch } from 'antd';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
@@ -8,14 +8,14 @@ import { addTaskAction } from '../redux/reducers/TodolistReducers';
 
 
 
-const { RangePicker } = DatePicker;
+
 const { TextArea } = Input;
 
 const validationSchema = Yup.object({
   taskName: Yup.string().required('Task name is required'),
   id: Yup.number().required('ID is required'),
   description: Yup.string().required('Description is required'),
-  dateRange: Yup.array().required('Please select a date range'),
+  date: Yup.date().required('Please select a date'),
   color: Yup.string().required('Please pick a color'),
 });
 
@@ -25,16 +25,18 @@ const FormikFormDemo = () => {
     <Formik
       initialValues={{
         taskName: '',
-        select: '',
+       
         id: '',
+        completed: false,
         description: '',
-        dateRange: null,
+        date: null,
         color: '',
       }}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-      const action = addTaskAction(values)
-      dispatch(action)
+        console.log('aaaa')
+        const action = addTaskAction(values)
+        dispatch(action)
       }}
     >
       {({ setFieldValue, handleSubmit }) => (
@@ -46,13 +48,13 @@ const FormikFormDemo = () => {
             <ErrorMessage name="taskName" component="div" className="error" />
           </div>
 
-          
+
 
           {/* Date Range Picker */}
           <div className="form-item">
             <label>Date</label>
             <DatePicker
-              onChange={(dates) => setFieldValue('dateRange', dates)}
+              onChange={(date, dateString) => setFieldValue('date', dateString)}
             />
             <ErrorMessage name="dateRange" component="div" className="error" />
           </div>
@@ -60,10 +62,20 @@ const FormikFormDemo = () => {
           {/* ID */}
           <div className="form-item">
             <label>ID</label>
-            <Field name="id" as={InputNumber} />
+            <Field name="id">
+              {({ field, form }) => (
+                <InputNumber
+                  {...field}
+                  onChange={(value) => form.setFieldValue('id', value ? value : '')} // Set empty string if no value
+                />
+              )}
+            </Field>
             <ErrorMessage name="id" component="div" className="error" />
           </div>
+          <div className="form-item">
 
+            <Switch onChange={(checked) => setFieldValue('completed', checked)}/>
+          </div>
           {/* Description */}
           <div className="form-item">
             <label>Description</label>
@@ -82,7 +94,7 @@ const FormikFormDemo = () => {
 
           {/* Submit Button */}
           <div className="form-item">
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" >
               Submit
             </Button>
           </div>
