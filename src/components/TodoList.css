@@ -1,0 +1,9 @@
+.custom-list-item {
+  display: flex;
+  justify-content: flex-start; /* Ghi đè thuộc tính space-between */
+  align-items: center; /* Căn giữa các item theo trục dọc nếu cần */
+}
+
+.custom-list-item .ant-list-item-action {
+  margin-left: 16px; /* Điều chỉnh khoảng cách giữa nội dung và hành động */
+}
